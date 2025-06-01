@@ -1,0 +1,31 @@
+{
+  "name": "anime-danmu-play-vue",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue-router": "^4.3.0",
+    "vue": "^3.5.13",
+    "element-plus": "^2.6.1",
+    "artplayer": "^5.1.1",
+    "artplayer-plugin-danmuku": "^5.0.1",
+    "axios": "^1.9.0",
+    "crypto-js": "^4.2.0",
+    "dexie": "^4.0.8",
+    "file-saver": "^2.0.5",
+    "hls.js": "^1.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.10",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/tsconfig": "^0.7.0",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5",
+    "vue-tsc": "^2.2.8"
+  }
+}

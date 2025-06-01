@@ -1,0 +1,11 @@
+/anime-danmu-play-js/.env.development
+/anime-danmu-play-script/.env.development
+/anime-danmu-play-vue/.env.development
+/anime-danmu-play-js/.env.production
+/anime-danmu-play-script/.env.production
+/anime-danmu-play-vue/.env.production
+
+.idea
+/anime-danmu-play-vue/.vscode/
+/anime-danmu-play-script/
+/anime-danmu-play-server/
