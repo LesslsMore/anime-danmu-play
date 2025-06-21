@@ -1,9 +1,8 @@
 /anime-danmu-play-js/.env.development
-/anime-danmu-play-script/.env.development
-/anime-danmu-play-vue/.env.development
 /anime-danmu-play-js/.env.production
-/anime-danmu-play-script/.env.production
+
+/anime-danmu-play-vue/.env.development
 /anime-danmu-play-vue/.env.production
+/anime-danmu-play-vue/.vscode/
 
 .idea
-/anime-danmu-play-vue/.vscode/
