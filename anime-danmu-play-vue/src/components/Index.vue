@@ -2,12 +2,12 @@
   <div class="container">
     <h1 style="display: flex; justify-content: center; align-items: center;">动漫弹幕播放</h1>
     <div class="input-row">
-      <span style="margin-right: 4px;">动漫ID</span>
-      <el-input v-model="form.anime_id" placeholder="动漫ID" style="width: 120px; margin-right: 8px;" />
-      <span style="margin-right: 4px;">剧集</span>
-      <el-input v-model="form.episode" placeholder="剧集" style="width: 80px; margin-right: 8px;" />
+<!--      <span style="margin-right: 4px;">动漫ID</span>-->
+<!--      <el-input v-model="form.anime_id" placeholder="动漫ID" style="width: 120px; margin-right: 8px;" />-->
       <span style="margin-right: 4px;">标题</span>
       <el-input v-model="form.title" placeholder="标题" style="width: 160px; margin-right: 8px;" />
+      <span style="margin-right: 4px;">剧集</span>
+      <el-input v-model="form.episode" placeholder="剧集" style="width: 80px; margin-right: 8px;" />
       <span style="margin-right: 4px;">视频URL</span>
       <el-input v-model="form.video_url" placeholder="视频URL" style="flex:1; margin-right: 8px;" />
       <el-button type="primary" @click="handlePlay">播放</el-button>

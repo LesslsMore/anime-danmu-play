@@ -8,7 +8,7 @@
 import { init_player } from '@/danmu/player/player'
 import {init_danmu_player, get_anime_list, set_anime_name} from '@/danmu/player/search'
 import {db_info} from "@/danmu/db/db";
-import {set_db_url_info} from "@/danmu/db/db_url";
+// import {set_db_url_info} from "@/danmu/db/db_url";
 
 import posterImg from '@/assets/image/backgroud.png'
 // import posterImg from '@/assets/image/wallpaper.jpg'
@@ -21,7 +21,7 @@ let artContainer = '.video-container'
 // init_danmu_player(art)
 
 async function updateArtPlayer(art, anime_id, title, url, episode) {
-
+  anime_id = `${title}`
 
   // 获取播放信息
   let info = {
@@ -32,7 +32,18 @@ async function updateArtPlayer(art, anime_id, title, url, episode) {
     episode,
   }
 
-  await set_db_url_info(info)
+  // 使用方式
+  const animeData = {
+    name: title,
+    episode,
+    url,
+  }
+
+  upsertAnimeVod(animeData).then(response => {
+    console.log('更新成功:', response)
+  })
+
+  // await set_db_url_info(info)
 
   art.storage.set('info', info)
   console.log('info: ', info)
@@ -57,6 +68,7 @@ async function updateArtPlayer(art, anime_id, title, url, episode) {
 
 import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
+import {searchAnimeVod, upsertAnimeVod} from "../danmu/api/anime.js";
 const route = useRoute()
 
 onMounted(async () => {
@@ -67,9 +79,32 @@ onMounted(async () => {
 
   const urlParams = new URLSearchParams(window.location.search);
   const anime_id = urlParams.get('anime_id');
+
   const episode = urlParams.get('episode');
   const title = urlParams.get('title');
-  const url = urlParams.get('url'); // 注意这里改为 video_url
+
+  let url = urlParams.get('url'); // 注意这里改为 video_url
+
+// 如果 url 为空，则通过 searchAnimeVod 接口获取
+  if (!url) {
+    try {
+      const searchData = {
+        name: title,
+        episode: episode
+      };
+
+      const response = await searchAnimeVod(searchData);
+
+      if (response.success && response.data && response.data.length > 0) {
+        url = response.data[0].url;
+        console.log('通过接口获取到的视频地址:', url);
+      } else {
+        console.log('未找到视频地址');
+      }
+    } catch (error) {
+      console.error('获取视频地址失败:', error);
+    }
+  }
 
   if (url) {
     let art = init_player(url, artContainer, posterImg)

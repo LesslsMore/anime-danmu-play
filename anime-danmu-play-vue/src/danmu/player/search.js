@@ -61,6 +61,9 @@ function init_episode_list(art) {
 
         // 获取选中的值
         const episode_id = $episodes.value;
+
+        // const episode_key = `${title} - ${episode}`
+
         // 在控制台打印选中的值
         let danmu
         try {
