@@ -1,6 +1,6 @@
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku';
 import {SEARCHED, UNSEARCHED} from "@/danmu/player/search.js";
-import {db_danmu} from "@/danmu/db/db.js";
+import {saveAs} from 'file-saver';
 
 const html_danmu = `<div id="k-player-danmaku-search-form">
                 <label>
@@ -82,18 +82,101 @@ function upload_danmu(art) {
     input.click();
 }
 
+function upload_subtitle(art) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.srt,.ass,.vtt';
+    input.onchange = async function () {
+        const file = input.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            let content = e.target.result;
+
+            // 如果是 SRT 格式，可能需要转换为 VTT 格式（因为 VTT 更标准）
+            if (file.name.endsWith('.srt')) {
+                content = 'WEBVTT FILE\n\n' + content.replace(/(\d\d:\d\d:\d\d),(\d\d\d)/g, '$1.$2');
+            }
+
+            const blob = new Blob([content], {
+                type: file.name.endsWith('.vtt') ? 'text/vtt' : 'text/plain'
+            });
+            const subtitleUrl = URL.createObjectURL(blob);
+
+            art.subtitle.url = subtitleUrl;
+            art.subtitle.show = true;
+
+            // 清理资源
+            art.once('destroy', () => {
+                URL.revokeObjectURL(subtitleUrl);
+            });
+        };
+        reader.readAsText(file, 'utf-8');
+    };
+    input.click();
+}
+
+
 async function down_danmu(art) {
-    let $episode_list = document.querySelector("#episode_list")
-    const episode_id = $episode_list.value
-    // let {anime_id, episode, title, url} = info
-    let danmu = await db_danmu.get(episode_id)
-    // let danmu = art.storage.get(episodeId)
+    // 优先使用当前播放器中的弹幕数据
+    let danmu = art.plugins.artplayerPluginDanmuku.option.danmuku;
+
 
     let info = art.storage.get('info')
     const {title, episode} = info
-    const blob = new Blob([JSON.stringify(danmu)], {type: "text/plain;charset=utf-8"});
-    saveAs(blob, `${title} - ${episode}.json`);
+
+    // 创建弹窗让用户选择下载格式
+    // const format = prompt('请输入要下载的弹幕格式 (json/xml):', 'json');
+    const format = 'xml'
+    if (format === 'xml') {
+        // 转换为 XML 格式
+        const xmlContent = convertToXmlFormat(danmu, title, episode);
+        const blob = new Blob([xmlContent], {type: "text/xml;charset=utf-8"});
+        saveAs(blob, `${title} - ${episode}.xml`);
+    } else {
+        // 默认 JSON 格式
+        const blob = new Blob([JSON.stringify(danmu)], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, `${title} - ${episode}.json`);
+    }
 }
+
+// 将弹幕数据转换为 XML 格式
+function convertToXmlFormat(danmu, title, episode) {
+    let xml = '<?xml version="1.0" encoding="UTF-8"?><i>\n';
+
+    // 如果 danmu 是数组格式（来自 JSON），需要转换为 XML 格式
+    if (Array.isArray(danmu)) {
+        danmu.forEach(item => {
+            // 确保必要字段存在默认值
+            const time = item.time || 0;
+            const mode = item.mode !== undefined ? (item.mode === 0 ? 1 : 4) : 1;
+            const fontSize = item.fontSize || 25;
+            const color = item.color ? parseInt(item.color.replace('#', ''), 16) : 16777215; // 默认白色
+            const timestamp = item.timestamp || Date.now();
+            const pool = item.pool || 0;
+            const userID = item.userID || 0;
+            const rowID = item.rowID || 0;
+
+            // 构建 XML 格式的弹幕属性
+            const p = `${time},${mode},${fontSize},${color},${timestamp},${pool},${userID},${rowID}`;
+
+            // 转义特殊字符
+            const text = (item.text || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
+
+            xml += `  <d p="${p}">${text}</d>\n`;
+        });
+    }
+
+    xml += '</i>';
+    return xml;
+}
+
 
 function init_danmu(art) {
     let plug = artplayerPluginDanmuku({
@@ -184,7 +267,6 @@ function init_danmu(art) {
 }
 
 
-
 function getMode(key) {
     switch (key) {
         case 1:
@@ -257,6 +339,7 @@ export {
     init_danmu,
     html_danmu,
     upload_danmu,
+    upload_subtitle,
     down_danmu,
     art_msgs,
 }

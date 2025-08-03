@@ -1,6 +1,7 @@
 import Artplayer from 'artplayer';
 import Hls from 'hls.js';
 import {down_danmu, html_danmu, upload_danmu} from "@/danmu/player/danmu.js";
+import {upload_subtitle} from "./danmu.js";
 
 function playM3u8(video, url, art) {
     if (Hls.isSupported()) {
@@ -34,6 +35,11 @@ function init_player(url, container, poster, data) {
         aspectRatio: true,
         setting: true,
         controls: [
+            {
+                position: 'right',
+                html: '字幕',
+                click: () => upload_subtitle(art),
+            },
             {
                 position: 'right',
                 html: '上传',

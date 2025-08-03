@@ -29,7 +29,7 @@ const form = reactive({
   anime_id: '9256',
   episode: '8',
   title: '夏日口袋',
-  video_url: 'https://sf16-sg-default.akamaized.net/obj/tos-alisg-ve-0051c001-sg/oEaYSIAAv8iA09zHAaSV0z2U3T0GiiDCEXBKK'
+  video_url: 'https://artplayer.org/assets/sample/video.mp4'
 })
 
 function get_param_url(animeId, episode, title, videoUrl) {
