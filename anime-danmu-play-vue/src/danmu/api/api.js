@@ -3,12 +3,20 @@ import { request } from '@/danmu/api/request'
 let end_point = '/proxy'
 let Comment_GetAsync = '/api/v2/comment/'
 
-let API_comment = '/api/v2/comment/'
-let API_search_episodes = `/api/v2/search/episodes`
 
-let Search_SearchAnimeAsync = `/api/v2/search/anime?keyword=`
 let Related_GetRealtedAsync = `/api/v2/related/`
 let Comment_GetExtCommentAsync = `/api/v2/extcomment?url=`
+
+// https://api.dandanplay.net/swagger/index.html#/%E5%BC%B9%E5%B9%95/Comment_GetComment
+let API_comment = '/api/v2/comment/'
+
+// https://api.dandanplay.net/swagger/index.html#/%E6%90%9C%E7%B4%A2/Search_SearchEpisodes
+let API_search_episodes = `/api/v2/search/episodes`
+
+// https://api.dandanplay.net/swagger/index.html#/%E6%90%9C%E7%B4%A2/Search_SearchAnime
+let Search_SearchAnimeAsync = `/api/v2/search/anime?keyword=`
+
+// https://api.dandanplay.net/swagger/index.html#/%E7%95%AA%E5%89%A7/Bangumi_GetBangumiDetails
 
 async function get_danmus(title, id) {
 

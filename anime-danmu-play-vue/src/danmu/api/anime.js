@@ -29,8 +29,21 @@ async function searchAnimeVod(searchData) {
     return res
 }
 
+async function getAnimeVod(pageData) {
+    const res = await request({
+        url: `${end_point}/api/anime/page`,
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: pageData
+    })
+    return res
+}
+
 export {
     upsertAnimeVod,
-    searchAnimeVod  // 添加到导出列表
+    searchAnimeVod,  // 添加到导出列表
+    getAnimeVod,
 }
 

@@ -1,16 +1,22 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
-import Index from '@/components/Index.vue'
+import Detail from '@/components/Detail.vue'
 import Play from '@/components/Play.vue'
+import Anime from "../components/Anime.vue";
 
 const routes = [
   {
     path: '/',
-    redirect: '/index'
+    redirect: '/anime'
   },
   {
-    path: '/index',
-    name: 'Index',
-    component: Index
+    path: '/anime',
+    name: 'Anime',
+    component: Anime
+  },
+  {
+    path: '/detail',
+    name: 'Detail',
+    component: Detail
   },
   {
     path: '/play',

@@ -62,7 +62,11 @@ async function updateArtPlayer(art, anime_id, title, url, episode) {
   // let { src_url, db_anime_info, db_anime_url } = await save_anime_info_db(anime_id, title, url)
 
   // await art.switchUrl(info.src_url || url)
+
+  // 设置番剧名称
   await set_anime_name(art)
+
+  // 更新番剧列表
   await get_anime_list(art)
 }
 
@@ -107,8 +111,11 @@ onMounted(async () => {
   }
 
   if (url) {
+    // 初始化播放器
     let art = init_player(url, artContainer, posterImg)
+    // 初始化弹幕
     init_danmu_player(art)
+
     await updateArtPlayer(art, anime_id, title, url, episode)
   } else {
     let art = init_player('.m3u8', artContainer, posterImg)

@@ -4,7 +4,7 @@ const db_name = 'anime'
 
 const db_schema = {
     info: '&anime_id', // 主键 索引
-    url: '&anime_id', // 主键 索引
+    anime: '&anime_id', // 主键 索引
     danmu: '&episode_id' // 组合键 索引
 }
 
@@ -12,7 +12,7 @@ const db_obj = {
     [db_name]: get_db(db_name, db_schema)
 }
 
-const db_url = db_obj[db_name].url
+const db_anime = db_obj[db_name].anime
 const db_info = db_obj[db_name].info
 const db_danmu = db_obj[db_name].danmu
 
@@ -58,7 +58,7 @@ function createDbMethods(dbInstance, pk, expiryInMinutes = 60) {
         }
         const now = new Date();
         if (now.getTime() > item.expiry) {
-            await db_url.delete(key);
+            await dbInstance.delete(key);
             return null;
         }
         return item.value;
@@ -72,7 +72,7 @@ function createDbMethods(dbInstance, pk, expiryInMinutes = 60) {
     }
 }
 
-createDbMethods(db_url, 'anime_id',60)
+createDbMethods(db_anime, 'anime_id',60 * 24 * 7)
 createDbMethods(db_info, 'anime_id',60 * 24 * 7)
 createDbMethods(db_danmu, 'episode_id',60 * 24 * 7)
 // db_url.put = put
@@ -93,7 +93,7 @@ createDbMethods(db_danmu, 'episode_id',60 * 24 * 7)
 //     console.log(value);
 // })();
 export {
-    db_url,
+    db_anime,
     db_info,
     db_danmu,
 }
