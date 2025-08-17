@@ -1,6 +1,7 @@
 import {db_danmu, db_info} from "@/danmu/db/db.js";
 import {get_comment, get_episodeId, get_search_episodes} from "@/danmu/api/api.js";
 import {art_msgs, init_danmu, update_danmu} from "@/danmu/player/danmu.js";
+import {db_anime} from "../db/db.js";
 
 let UNSEARCHED = ['未搜索到番剧弹幕', '请按右键菜单', '手动搜索番剧名称',]
 
@@ -23,10 +24,7 @@ function init_episode_list(art) {
     async function update_episode_select(art) {
         // 章节
         let {
-            anime_id,
             title,
-
-            url,
             episode,
         } = art.storage.get('info')
 
@@ -34,20 +32,18 @@ function init_episode_list(art) {
 
         const episode_idx = $episodes.selectedIndex
         console.log('update_episode_select: ', episode_idx)
-        let db_anime_info = await db_info.get(anime_id)
-        // let db_anime_info = art.storage.get('db_info')
+        let db_anime_info = await db_info.get(title)
+
         const {episode_dif} = db_anime_info
         // 存储选择的剧集序号
         let dif = episode_idx + 1 - episode
         if (dif !== episode_dif) {
             db_anime_info['episode_dif'] = dif
-            await db_info.put(anime_id, db_anime_info)
+            await db_info.put(title, db_anime_info)
         }
 
         // 获取选中的值
         const episode_id = $episodes.value;
-
-        // const episode_key = `${title} - ${episode}`
 
         // 在控制台打印选中的值
         let danmu
@@ -70,25 +66,24 @@ function init_episode_list(art) {
 
     // 更新 episode select
     // 初始剧集选项与默认选择
-    async function update_episode_list(art, anime) {
-        console.log('update_episode_list: ', anime)
+    async function update_episode_list(art) {
+        console.log('update_episode_list: ')
 
         let {
-            anime_id,
             title,
-
+            animeId,
             url,
             episode,
         } = art.storage.get('info')
+        let anime = await db_anime.get(animeId)
         // 章节
         let $episodes = document.querySelector("#episode_list")
 
-        const {animeId, episodes} = anime
+        const {episodes} = anime
         const html = episodes.reduce((html, episode) => html + `<option value="${episode.episodeId}">${episode.episodeTitle}</option>`, '')
         $episodes.innerHTML = html
 
-        let db_anime_info = await db_info.get(anime_id)
-        // let db_anime_info = art.storage.get('db_info')
+        let db_anime_info = await db_info.get(title)
         const {episode_dif} = db_anime_info
 
         let episodeId = get_episodeId(animeId, episode_dif + episode)
@@ -110,7 +105,7 @@ function init_episode_list(art) {
 
     document.addEventListener('update_episode_list', async function (e) {
         let {art, anime} = e.detail
-        await update_episode_list(art, anime)
+        await update_episode_list(art)
     });
 
     document.addEventListener('update_episode_select', async function (e) {
@@ -123,15 +118,13 @@ function init_anime_list(art) {
     let $anime_list = document.querySelector("#anime_list")
 
     $anime_list.addEventListener('change', async () => {
-        // let db_anime_info = art.storage.get('db_info')
         let {
-            anime_id,
             title,
 
             url,
             episode,
         } = art.storage.get('info')
-        let db_anime_info = await db_info.get(anime_id)
+        let db_anime_info = await db_info.get(title)
         // 获取选中的值
         const new_idx = $anime_list.selectedIndex
         const {anime_idx, animes} = db_anime_info
@@ -139,15 +132,9 @@ function init_anime_list(art) {
         if (new_idx !== anime_idx) {
             db_anime_info['anime_idx'] = new_idx
             // 更新选择的剧集
-            // art.storage.set('db_info', db_anime_info)
-            await db_info.put(anime_id, db_anime_info)
+            await db_info.put(title, db_anime_info)
             await set_anime_name(art)
             await get_anime_list(art)
-
-            // 番剧选项变化
-            // await update_episode_list(art, animes[new_idx])
-
-            // $animeName.value = anime_info['animes'][anime_info['idx']]['animeTitle']
         }
     });
 
@@ -182,14 +169,12 @@ function init_danmu_player(art) {
 async function set_anime_name(art) {
 
     let {
-        anime_id,
         title,
-
         url,
         episode,
     } = art.storage.get('info')
 
-    let db_anime_info = await db_info.get(anime_id)
+    let db_anime_info = await db_info.get(title)
     console.log('set_anime_name: ', db_anime_info)
     let {animes, anime_idx} = db_anime_info
     // let {anime_idx} = db_anime_info
@@ -199,7 +184,7 @@ async function set_anime_name(art) {
     } else {
         new_idx = 0
         db_anime_info.anime_idx = new_idx
-        await db_info.put(anime_id, db_anime_info)
+        await db_info.put(title, db_anime_info)
     }
     let animeTitle = animes[new_idx].animeTitle
     let $anime_name = document.querySelector("#anime_name")
@@ -223,7 +208,7 @@ async function update_anime_list_req(art) {
         episode,
     } = art.storage.get('info')
 
-    let db_anime_info = await db_info.get(anime_id)
+    let db_anime_info = await db_info.get(title)
     let animes
 
     let $anime_name = document.querySelector("#anime_name")
@@ -236,7 +221,11 @@ async function update_anime_list_req(art) {
     }
     if (animes.length > 0) {
         db_anime_info.animes = animes
-        await db_info.put(anime_id, db_anime_info)
+        await db_info.put(title, db_anime_info)
+
+        for (let anime of animes) {
+            await db_anime.put(anime.animeId, anime)
+        }
         // await set_anime_name(art)
         await get_anime_list(art)
     } else {
@@ -245,7 +234,19 @@ async function update_anime_list_req(art) {
 }
 
 // 初始番剧选项与默认选择
-function update_anime_list_dom(art, animes, anime_idx) {
+async function update_anime_list_dom(art) {
+    let info = art.storage.get('info')
+    let {
+        anime_id,
+        title,
+        url,
+        episode,
+    } = info
+
+    let db_anime_info = await db_info.get(title)
+    let {animes, anime_idx} = db_anime_info
+
+
     console.log('update_anime_list: ', animes, anime_idx)
     // 番剧名称列表
     let $anime_list = document.querySelector("#anime_list")
@@ -256,10 +257,13 @@ function update_anime_list_dom(art, animes, anime_idx) {
     let anime = animes[anime_idx]
     $anime_list.value = anime['animeId']
 
+
+    info['animeId'] = anime['animeId']
+    art.storage.set('info', info)
+
     const event = new CustomEvent('update_episode_list', {
         detail: {
-            art,
-            anime,
+            art
         },
     });
     document.dispatchEvent(event);
@@ -267,25 +271,19 @@ function update_anime_list_dom(art, animes, anime_idx) {
 
 async function get_anime_list(art) {
     let {
-        anime_id,
         title,
-
-        url,
-        episode,
     } = art.storage.get('info')
 
-    let db_anime_info = await db_info.get(anime_id)
-    // let db_anime_info = art.storage.get('db_info')
+    let db_anime_info = await db_info.get(title)
 
     let {animes, anime_idx} = db_anime_info
     let anime = animes[anime_idx]
-    const {animeTitle} = anime
     if (!anime.hasOwnProperty('animeId')) {
         console.log('没有缓存，请求接口')
         await update_anime_list_req(art)
     } else {
         console.log('有缓存，请求弹幕')
-        update_anime_list_dom(art, animes, anime_idx)
+        await update_anime_list_dom(art)
     }
 }
 

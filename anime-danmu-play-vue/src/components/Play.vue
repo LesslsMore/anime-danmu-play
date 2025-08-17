@@ -47,7 +47,8 @@ async function updateArtPlayer(art, anime_id, title, url, episode) {
 
   art.storage.set('info', info)
   console.log('info: ', info)
-  let db_anime_info = await db_info.get(anime_id)
+
+  let db_anime_info = await db_info.get(title)
   if (db_anime_info) {
 
   } else {
@@ -56,7 +57,7 @@ async function updateArtPlayer(art, anime_id, title, url, episode) {
       anime_idx: 0,
       episode_dif: 0,
     }
-    await db_info.put(anime_id, db_anime_info)
+    await db_info.put(title, db_anime_info)
   }
   console.log('db_anime_info: ', db_anime_info)
   // let { src_url, db_anime_info, db_anime_url } = await save_anime_info_db(anime_id, title, url)
