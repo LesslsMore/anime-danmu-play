@@ -20,7 +20,7 @@ let Search_SearchAnimeAsync = `/api/v2/search/anime?keyword=`
 
 async function get_danmus(title, id) {
 
-    // let animeId = await get_animeId(title)
+    let animeId = await get_animeId(title)
 
     id = id.padStart(4, "0");
     let episodeId = `${animeId}${id}`

@@ -19,40 +19,23 @@ let artContainer = '.video-container'
 // let art = null;
 
 
-async function updateArtPlayer(art, title, url, episode) {
-  // 获取播放信息
-  let info = {
-    title,
-    src_url: url,
-    url,
-    episode,
-  }
+async function updateArtPlayer(art) {
+  // let {
+  //   title,
+  // } = art.storage.get('info')
 
-  // 使用方式
-  const animeData = {
-    name: title,
-    episode,
-    url,
-  }
-
-  upsertAnimeVod(animeData).then(response => {
-    console.log('更新成功:', response)
-  })
-
-  art.storage.set('info', info)
-
-  let db_anime_info = await db_info.get(title)
-  if (db_anime_info) {
-
-  } else {
-    db_anime_info = {
-      animes: [{animeTitle: title}],
-      anime_idx: 0,
-      episode_dif: 0,
-    }
-    await db_info.put(title, db_anime_info)
-  }
-  console.log('db_anime_info: ', db_anime_info)
+  // let db_anime_info = await db_info.get(title)
+  // if (db_anime_info) {
+  //
+  // } else {
+  //   db_anime_info = {
+  //     animes: [{animeTitle: title}],
+  //     anime_idx: 0,
+  //     episode_dif: 0,
+  //   }
+  //   await db_info.put(title, db_anime_info)
+  // }
+  // console.log('db_anime_info: ', db_anime_info)
 
   // 设置番剧名称
   await set_anime_name(art)
@@ -100,7 +83,38 @@ onMounted(async () => {
     let art = init_player(url, artContainer, posterImg)
     // 初始化弹幕
     init_danmu_player(art)
-    await updateArtPlayer(art, title, url, episode)
+
+
+
+    // 使用方式
+    const animeData = {
+      name: title,
+      episode,
+      url,
+    }
+
+    upsertAnimeVod(animeData).then(response => {
+      console.log('更新成功:', response)
+    })
+
+    // 获取播放信息
+    let info = {
+      title,
+      url,
+      episode,
+    }
+
+    let db_info = {
+      anime_idx: 0,
+      episode_dif: 0,
+      animeTitle: null,
+      animeId: null,
+      // animes: [{animeTitle: title}],
+    }
+    art.storage.set('info', info)
+    art.storage.set(title, db_info)
+
+    await updateArtPlayer(art)
   } else {
     let art = init_player('.m3u8', artContainer, posterImg)
     console.log('视频URL未提供')

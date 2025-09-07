@@ -61,7 +61,7 @@ const selectedSite = ref('')
 const siteOptions = ref([])
 
 // 剧集相关
-const selectedEpisode = ref('')
+const selectedEpisode = ref(8)
 const episodeOptions = ref([])
 
 // 线路和剧集的映射数据
