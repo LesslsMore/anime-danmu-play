@@ -4,61 +4,67 @@
       <el-col
           v-for="item in animeList"
           :key="item.vod_id"
-          :span="3"
+          :span="6"
           class="anime-card-col"
       >
         <el-card :body-style="{ padding: '10px' }" class="anime-card">
-          <div class="anime-image-placeholder">
-            <el-image
-                :src="defaultImage"
-                fit="cover"
-                class="anime-image"
-            >
-              <template #error>
-                <div class="image-slot">
-                  <el-icon>
-                    <Picture/>
-                  </el-icon>
-                </div>
-              </template>
-            </el-image>
-          </div>
-          <div class="anime-info">
-            <div class="anime-title" :title="item.vod_name">{{ item.vod_name }}</div>
-            <div class="anime-time">
-              <div class="created-at">创建: {{ formatDate(item.created_at) }}</div>
-              <div class="updated-at">更新: {{ formatDate(item.updated_at) }}</div>
-            </div>
-            <div class="site-selection">
-              <el-select
-                  v-model="selectedSite[item.vod_id]"
-                  placeholder="选择线路"
-                  size="small"
-                  @change="handleSiteChange(item.vod_id, item.vod_play_url, $event)"
+          <div class="anime-content">
+            <!-- 左侧图片 -->
+            <div class="anime-image-placeholder">
+              <el-image
+                  :src="item.vod_pic || defaultImage"
+                  fit="cover"
+                  class="anime-image"
               >
-                <el-option
-                    v-for="(site, siteName) in item.vod_play_url"
-                    :key="siteName"
-                    :label="siteName"
-                    :value="siteName"
-                />
-              </el-select>
+                <template #error>
+                  <div class="image-slot">
+                    <el-icon>
+                      <Picture/>
+                    </el-icon>
+                  </div>
+                </template>
+              </el-image>
             </div>
-            <div class="play-button">
-              <el-button
-                  type="primary"
-                  size="small"
-                  @click="playAnime(item)"
-                  :disabled="!selectedSite[item.vod_id]"
-              >
-                播放
-              </el-button>
+
+            <!-- 右侧信息 -->
+            <div class="anime-info">
+              <div class="anime-title" :title="item.vod_name">{{ item.vod_name }}</div>
+              <div class="anime-time">
+                <div class="created-at">创建: {{ formatDate(item.created_at) }}</div>
+                <div class="updated-at">更新: {{ formatDate(item.updated_at) }}</div>
+              </div>
+              <div class="site-selection">
+                <el-select
+                    v-model="selectedSite[item.vod_id]"
+                    placeholder="选择线路"
+                    size="small"
+                    @change="handleSiteChange(item.vod_id, item.vod_play_url, $event)"
+                >
+                  <el-option
+                      v-for="(site, siteName) in item.vod_play_url"
+                      :key="siteName"
+                      :label="siteName"
+                      :value="siteName"
+                  />
+                </el-select>
+              </div>
+              <div class="play-button">
+                <el-button
+                    type="primary"
+                    size="small"
+                    @click="playAnime(item)"
+                    :disabled="!selectedSite[item.vod_id]"
+                >
+                  播放
+                </el-button>
+              </div>
             </div>
           </div>
         </el-card>
       </el-col>
     </el-row>
 
+    <!-- 分页保持不变 -->
     <div class="pagination-container">
       <el-pagination
           v-model:current-page="currentPage"
@@ -72,6 +78,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import {onMounted, reactive, ref} from 'vue'
@@ -173,15 +180,21 @@ onMounted(() => {
 }
 
 .anime-card {
-  height: 300px;
+  height: 180px;
+}
+
+.anime-content {
   display: flex;
-  flex-direction: column;
+  height: 100%;
 }
 
 .anime-image-placeholder {
-  height: 120px;
+  width: 120px;
+  height: 160px;
   overflow: hidden;
   border-radius: 4px;
+  flex-shrink: 0;
+  margin-right: 10px;
 }
 
 .anime-image {
@@ -203,7 +216,6 @@ onMounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
 }
 
 .anime-title {
@@ -240,3 +252,4 @@ onMounted(() => {
   margin-top: 30px;
 }
 </style>
+
