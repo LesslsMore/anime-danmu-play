@@ -1,7 +1,8 @@
 import {db_danmu, db_info} from "@/danmu/db/db.js";
-import {get_comment, get_episodeId, get_search_episodes} from "@/danmu/api/api.js";
+import {get_bangumi_details, get_comment, get_episodeId, get_search_episodes} from "@/danmu/api/api.js";
 import {art_msgs, init_danmu, update_danmu} from "@/danmu/player/danmu.js";
 import {db_anime} from "../db/db.js";
+import {upsertAnimeVod} from "@/danmu/api/anime.js";
 
 let UNSEARCHED = ['未搜索到番剧弹幕', '请按右键菜单', '手动搜索番剧名称',]
 
@@ -68,12 +69,35 @@ function init_episode_list(art) {
         let {
             title,
             episode,
+            url,
         } = art.storage.get('info')
 
         let db_info = art.storage.get(title)
         console.log('animeId: ', db_info['animeId'])
         let animeId = parseInt(db_info['animeId'])
         let anime = await db_anime.get(animeId)
+
+        // todo img
+        if (anime['imageUrl'] === undefined){
+            let bangumi = await get_bangumi_details(animeId)
+            console.log('bangumi: ', bangumi)
+            anime['imageUrl'] = bangumi.imageUrl
+            await db_anime.put(animeId, anime)
+
+            // 使用方式
+            const animeData = {
+                vod_id: animeId,
+                name: anime.animeTitle,
+                vod_pic: anime.imageUrl,
+                episode,
+                url,
+            }
+
+            upsertAnimeVod(animeData).then(response => {
+                console.log('更新成功:', response)
+            })
+        }
+
         // 章节
         let $episodes = document.querySelector("#episode_list")
 

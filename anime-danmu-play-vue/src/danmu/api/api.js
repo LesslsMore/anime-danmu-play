@@ -17,6 +17,7 @@ let API_search_episodes = `/api/v2/search/episodes`
 let Search_SearchAnimeAsync = `/api/v2/search/anime?keyword=`
 
 // https://api.dandanplay.net/swagger/index.html#/%E7%95%AA%E5%89%A7/Bangumi_GetBangumiDetails
+let Bangumi_GetBangumiDetails = `/api/v2/bangumi/`
 
 async function get_danmus(title, id) {
 
@@ -73,6 +74,15 @@ async function get_search_episodes(anime, episode) {
     // })
     console.log(res)
     return res.animes
+}
+
+async function get_bangumi_details(animeId) {
+    const res = await request({
+        url: `${end_point}${Bangumi_GetBangumiDetails}${animeId}`,
+        method: 'get',
+    })
+    // console.log(res)
+    return res.bangumi
 }
 
 async function get_url(url) {
@@ -150,4 +160,5 @@ export {
     get_comment,
     get_episodeId,
     get_url,
+    get_bangumi_details,
 }
