@@ -1,4 +1,8 @@
 {
+  "compilerOptions": {
+    "types": ["element-plus/global"]
+  },
+  "include": ["src/**/*", "src/**/*.vue", "src/**/*.d.ts"],
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

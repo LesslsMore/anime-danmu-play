@@ -1,4 +1,4 @@
-import { request } from '@/danmu/api/request'
+import {request} from '@/danmu/api/request'
 
 let end_point = '/proxy'
 let Comment_GetAsync = '/api/v2/comment/'
@@ -50,7 +50,7 @@ async function get_animeId(title) {
     let data = await request.get(url)
     // data = JSON.parse(data)
     console.log(data)
-    let { animeId, animeTitle } = data.animes[0]
+    let {animeId, animeTitle} = data.animes[0]
     console.log(animeId)
     console.log(animeTitle)
     return animeId
@@ -61,7 +61,7 @@ async function get_search_episodes(anime, episode) {
     const res = await request({
         url: `${end_point}${API_search_episodes}`,
         method: 'get',
-        params: { anime, episode },
+        params: {anime, episode},
     })
     // const res = await request({
     //     url: `${end_point}${API_search_episodes}?anime=${anime}`,
@@ -75,7 +75,7 @@ async function get_search_episodes(anime, episode) {
     return res.animes
 }
 
-async function get_url(url){
+async function get_url(url) {
     let res
     try {
         res = await request({

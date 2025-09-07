@@ -167,17 +167,13 @@ function init_danmu_player(art) {
 
 // 设置番剧名称
 async function set_anime_name(art) {
-
     let {
         title,
-        url,
-        episode,
     } = art.storage.get('info')
 
     let db_anime_info = await db_info.get(title)
     console.log('set_anime_name: ', db_anime_info)
     let {animes, anime_idx} = db_anime_info
-    // let {anime_idx} = db_anime_info
     let new_idx
     if (anime_idx <= animes.length - 1) {
         new_idx = anime_idx
@@ -201,9 +197,7 @@ async function set_anime_name(art) {
 // 请求接口，搜索番剧
 async function update_anime_list_req(art) {
     let {
-        anime_id,
         title,
-
         url,
         episode,
     } = art.storage.get('info')
@@ -237,10 +231,7 @@ async function update_anime_list_req(art) {
 async function update_anime_list_dom(art) {
     let info = art.storage.get('info')
     let {
-        anime_id,
         title,
-        url,
-        episode,
     } = info
 
     let db_anime_info = await db_info.get(title)

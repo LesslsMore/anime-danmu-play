@@ -28,7 +28,7 @@ function createDbMethods(dbInstance, pk, expiryInMinutes = 60) {
     const old_put = dbInstance.put.bind(dbInstance);
     const old_get = dbInstance.get.bind(dbInstance);
 
-    const put = async function(key, value) {
+    const put = async function (key, value) {
         const now = new Date();
         const item = {
             [pk]: key,
@@ -45,7 +45,7 @@ function createDbMethods(dbInstance, pk, expiryInMinutes = 60) {
 
         return result;
     };
-    const get = async function(key) {
+    const get = async function (key) {
         const item = await old_get(key);
         // console.log(item)
         const event = new Event(old_get.name);
@@ -72,9 +72,9 @@ function createDbMethods(dbInstance, pk, expiryInMinutes = 60) {
     }
 }
 
-createDbMethods(db_anime, 'anime_id',60 * 24 * 7)
-createDbMethods(db_info, 'anime_id',60 * 24 * 7)
-createDbMethods(db_danmu, 'episode_id',60 * 24 * 7)
+createDbMethods(db_anime, 'anime_id', 60 * 24 * 7)
+createDbMethods(db_info, 'anime_id', 60 * 24 * 7)
+createDbMethods(db_danmu, 'episode_id', 60 * 24 * 7)
 // db_url.put = put
 // db_url.get = get
 

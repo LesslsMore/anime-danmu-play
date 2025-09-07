@@ -78,5 +78,4 @@ function init_player(url, container, poster, data) {
 }
 
 
-
-export { init_player };
+export {init_player};

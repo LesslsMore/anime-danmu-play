@@ -1,6 +1,7 @@
-import { request } from '@/danmu/api/request'
+import {request} from '@/danmu/api/request'
 
 const end_point = import.meta.env.VITE_anime_api
+
 // 新增或更新 AnimeVod 接口
 async function upsertAnimeVod(animeData) {
     const res = await request({

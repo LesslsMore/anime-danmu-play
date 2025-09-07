@@ -5,27 +5,23 @@
 
 <script setup>
 // 弹幕相关依赖
-import { init_player } from '@/danmu/player/player'
-import {init_danmu_player, get_anime_list, set_anime_name} from '@/danmu/player/search'
+import {init_player} from '@/danmu/player/player'
+import {get_anime_list, init_danmu_player, set_anime_name} from '@/danmu/player/search'
 import {db_info} from "@/danmu/db/db";
-// import {set_db_url_info} from "@/danmu/db/db_url";
-
 import posterImg from '@/assets/image/backgroud.png'
-// import posterImg from '@/assets/image/wallpaper.jpg'
-
+import {useRoute} from 'vue-router'
+import {onMounted} from 'vue'
+import {searchAnimeVod, upsertAnimeVod} from "../danmu/api/anime.js";
 
 
 let artContainer = '.video-container'
+
 // let art = null;
 
-// init_danmu_player(art)
 
-async function updateArtPlayer(art, anime_id, title, url, episode) {
-  anime_id = `${title}`
-
+async function updateArtPlayer(art, title, url, episode) {
   // 获取播放信息
   let info = {
-    anime_id,
     title,
     src_url: url,
     url,
@@ -43,26 +39,20 @@ async function updateArtPlayer(art, anime_id, title, url, episode) {
     console.log('更新成功:', response)
   })
 
-  // await set_db_url_info(info)
-
   art.storage.set('info', info)
-  console.log('info: ', info)
 
   let db_anime_info = await db_info.get(title)
   if (db_anime_info) {
 
   } else {
     db_anime_info = {
-      animes: [{ animeTitle: title }],
+      animes: [{animeTitle: title}],
       anime_idx: 0,
       episode_dif: 0,
     }
     await db_info.put(title, db_anime_info)
   }
   console.log('db_anime_info: ', db_anime_info)
-  // let { src_url, db_anime_info, db_anime_url } = await save_anime_info_db(anime_id, title, url)
-
-  // await art.switchUrl(info.src_url || url)
 
   // 设置番剧名称
   await set_anime_name(art)
@@ -71,23 +61,17 @@ async function updateArtPlayer(art, anime_id, title, url, episode) {
   await get_anime_list(art)
 }
 
-import { useRoute } from 'vue-router'
-import { onMounted } from 'vue'
-import {searchAnimeVod, upsertAnimeVod} from "../danmu/api/anime.js";
 const route = useRoute()
 
 onMounted(async () => {
-  // const anime_id = route.query.anime_id
   // const episode = route.query.episode
   // const title = route.query.title
   // const url = route.query.video_url
 
   const urlParams = new URLSearchParams(window.location.search);
-  const anime_id = urlParams.get('anime_id');
 
   const episode = urlParams.get('episode');
   const title = urlParams.get('title');
-
   let url = urlParams.get('url'); // 注意这里改为 video_url
 
 // 如果 url 为空，则通过 searchAnimeVod 接口获取
@@ -116,8 +100,7 @@ onMounted(async () => {
     let art = init_player(url, artContainer, posterImg)
     // 初始化弹幕
     init_danmu_player(art)
-
-    await updateArtPlayer(art, anime_id, title, url, episode)
+    await updateArtPlayer(art, title, url, episode)
   } else {
     let art = init_player('.m3u8', artContainer, posterImg)
     console.log('视频URL未提供')
@@ -126,13 +109,13 @@ onMounted(async () => {
 </script>
 
 
-
 <style scoped>
 html, body {
   margin: 0;
   height: 100%;
   overflow: hidden; /* Prevent scrollbars if not needed */
 }
+
 .video-container {
   height: 100%;
   width: 100%;

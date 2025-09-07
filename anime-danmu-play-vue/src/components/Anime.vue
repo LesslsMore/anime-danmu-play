@@ -16,7 +16,9 @@
             >
               <template #error>
                 <div class="image-slot">
-                  <el-icon><Picture /></el-icon>
+                  <el-icon>
+                    <Picture/>
+                  </el-icon>
                 </div>
               </template>
             </el-image>
@@ -72,10 +74,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { Picture } from '@element-plus/icons-vue'
-import { getAnimeVod } from '@/danmu/api/anime.js'
-import { useRouter } from 'vue-router'
+import {onMounted, reactive, ref} from 'vue'
+import {Picture} from '@element-plus/icons-vue'
+import {getAnimeVod} from '@/danmu/api/anime.js'
+import {useRouter} from 'vue-router'
 
 const router = useRouter()
 

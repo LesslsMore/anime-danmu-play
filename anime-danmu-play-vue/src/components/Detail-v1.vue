@@ -21,8 +21,8 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import {onMounted, reactive} from 'vue'
+import {useRouter} from 'vue-router'
 
 const router = useRouter()
 const form = reactive({

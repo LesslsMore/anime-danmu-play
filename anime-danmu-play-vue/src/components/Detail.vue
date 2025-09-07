@@ -3,7 +3,7 @@
     <h1 style="display: flex; justify-content: center; align-items: center;">动漫弹幕播放</h1>
     <div class="input-row">
       <span style="margin-right: 4px;">标题</span>
-      <el-input v-model="form.title" placeholder="标题" style="width: 160px; margin-right: 8px;" />
+      <el-input v-model="form.title" placeholder="标题" style="width: 160px; margin-right: 8px;"/>
       <el-button type="primary" @click="searchAnime">搜索</el-button>
 
       <span style="margin: 0 4px 0 16px;">线路</span>
@@ -37,7 +37,7 @@
         />
       </el-select>
       <span style="margin-right: 4px;">视频URL</span>
-      <el-input v-model="form.video_url" placeholder="视频URL" style="flex:1; margin-right: 8px;" />
+      <el-input v-model="form.video_url" placeholder="视频URL" style="flex:1; margin-right: 8px;"/>
       <el-button type="primary" @click="handlePlay" :disabled="!form.video_url">播放</el-button>
     </div>
     <div class="video-container" style="width: 64vw; height: 36vw; margin: 0 auto;">
@@ -47,14 +47,13 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, watch } from 'vue'
-import { searchAnimeVod } from '@/danmu/api/anime.js'
+import {onMounted, reactive, ref, watch} from 'vue'
+import {searchAnimeVod} from '@/danmu/api/anime.js'
 
 const form = reactive({
-  anime_id: '',
-  episode: '',
-  title: '龙族第二季',
-  video_url: ''
+  episode: '8',
+  title: '夏日口袋',
+  video_url: 'https://artplayer.org/assets/sample/video.mp4'
 })
 
 // 线路相关
@@ -165,9 +164,10 @@ function handlePlay() {
   }
 }
 
-onMounted(()=>{
+onMounted(() => {
   console.log('onMounted')
-  searchAnime()
+  // searchAnime()
+  handlePlay()
 })
 </script>
 
@@ -175,6 +175,7 @@ onMounted(()=>{
 h1 {
   margin: 0px 0px 16px 0px;
 }
+
 .container {
   background: #f5f7fa;
   width: 100%;
@@ -182,6 +183,7 @@ h1 {
   margin: 0;
   padding: 0;
 }
+
 .input-row {
   display: flex;
   align-items: center;
@@ -189,11 +191,12 @@ h1 {
   margin: 0 auto 16px;
   gap: 0;
 }
+
 .video-container {
   height: 100%;
   width: 100%;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: relative;
   overflow: hidden;
 }
