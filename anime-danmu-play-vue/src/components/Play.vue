@@ -72,18 +72,23 @@ onMounted(async () => {
     let info = {
       title,
       url,
-      episode,
+      episode: parseInt(episode),
     }
 
-    let db_info = {
-      anime_idx: 0,
-      episode_dif: 0,
-      animeTitle: null,
-      animeId: null,
-      // animes: [{animeTitle: title}],
-    }
+
     art.storage.set('info', info)
-    art.storage.set(title, db_info)
+
+    let db_info = art.storage.get(title)
+    if (db_info === undefined) {
+      let db_info = {
+        anime_idx: 0,
+        episode_dif: 0,
+        animeTitle: null,
+        animeId: null,
+        // animes: [{animeTitle: title}],
+      }
+      art.storage.set(title, db_info)
+    }
 
     await updateArtPlayer(art)
   } else {

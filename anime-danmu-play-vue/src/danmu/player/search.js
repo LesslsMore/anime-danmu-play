@@ -31,14 +31,18 @@ function init_episode_list(art) {
         let db_info = art.storage.get(title)
         let $episodes = document.querySelector("#episode_list")
 
+        const episodeId = $episodes.value
         const episode_idx = $episodes.selectedIndex
-        console.log('update_episode_select: ', episode_idx)
+        console.log('$episodes', $episodes)
+        console.log('value: ', episodeId)
+        console.log('selectedIndex: ', episode_idx)
 
         // 存储选择的剧集序号
         let dif = episode_idx + 1 - episode
         if (dif !== db_info['episode_dif']) {
             db_info['episode_dif'] = dif
             art.storage.set(title, db_info)
+            console.log('title', db_info)
         }
 
         // 获取选中的值
@@ -108,6 +112,9 @@ function init_episode_list(art) {
         let episodeId = get_episodeId(db_info['animeId'], db_info['episode_dif'] + episode)
 
         $episodes.value = episodeId
+        // $episodes.selectedIndex = db_info['episode_dif'] + episode
+        console.log('episodeId: ', $episodes.value, episodeId)
+        // console.log('episodeId: ', $episodes.selectedIndex, db_info['episode_dif'] + episode)
 
         const event = new CustomEvent('update_episode_select', {
             detail: {
@@ -161,6 +168,7 @@ function init_anime_list(art) {
         if (new_animeId !== db_info['animeId']) {
             db_info['animeId'] = new_animeId
             art.storage.set(title, db_info)
+            console.log('title', db_info)
             await set_anime_name(art)
             await get_anime_list(art)
         }
@@ -223,6 +231,7 @@ async function set_anime_name(art) {
     if (db_info['animeTitle'] === null) {
         db_info['animeTitle'] = title
         art.storage.set(title, db_info)
+        console.log('title', db_info)
     }
 
     let $anime_name = document.querySelector("#anime_name")
@@ -248,6 +257,7 @@ async function update_anime_list_req(art) {
         db_info['animeId'] = animes[0]['animeId']
         db_info['animes'] = animes
         art.storage.set(title, db_info)
+        console.log('title', db_info)
         for (let anime of animes) {
             console.log('animeId: ', anime.animeId)
             await db_anime.put(anime.animeId, anime)
